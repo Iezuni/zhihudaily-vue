@@ -35,7 +35,7 @@ Vue.prototype.$message = Message;
 Vue.config.productionTip = false
 
 Vue.prototype.$config = {
-  apiPath: process.env.VUE_APP_apiPath
+  apiPath: process.env.VUE_APP_apiUrl
 };
 
 new Vue({
