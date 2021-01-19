@@ -34,6 +34,10 @@ Vue.prototype.$message = Message;
 
 Vue.config.productionTip = false
 
+Vue.prototype.$config = {
+  apiPath: process.env.VUE_APP_apiPath
+};
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')

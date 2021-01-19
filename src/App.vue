@@ -3,11 +3,11 @@
     <el-container>
       <el-header>
         <div class="site-title-bar">
-          <span class="site-title">每日知乎</span>
+          <span><el-link class="site-title" href="/">每日知乎</el-link></span>
           <el-date-picker
             v-model="datePicker"
             type="date"
-            placeholder="选择日期"
+            placeholder="选择收录日期"
             value-format="yyyyMMdd"
           >
           </el-date-picker>
@@ -17,7 +17,7 @@
         日报日期:{{ newsDate }}
         <el-tooltip
           effect="dark"
-          content="这个时间是收录时间"
+          content="这个时间是收录时间,上面的是发布日期"
           placement="bottom"
         >
           <i class="el-icon-info"></i>
@@ -59,13 +59,13 @@
           target="_blank"
           rel="noopener noreferrer"
           >Element</el-link
-        >构建
+        >构建<br />
         <el-link
           type="primary"
           href="//github.com/yinyunsan/zhihudaily-vue"
           target="_blank"
           rel="noopener noreferrer"
-          >Element</el-link
+          >github</el-link
         >
       </el-footer>
     </el-container>
@@ -95,21 +95,22 @@ export default {
     async getData(_date) {
       let data = await axios({
         method: "post",
-        url: "//api.lostkotoba.top/zhihu",
-        // url: "//127.0.0.1:8381/zhihu",
+        url: this.$config.apiPath,
         data: "date=" + _date,
       });
       return data;
     },
   },
   mounted: async function() {
-    let d = new Date();
-    d.setDate(d.getDate() + 1);
+    let today = new Date();
+    today.setDate(today.getDate() + 1);
     let _date =
       "" +
-      d.getFullYear() +
-      (d.getMonth() + 1 < 10 ? "0" + (d.getMonth() + 1) : d.getMonth() + 1) +
-      (d.getDate() < 10 ? "0" + d.getDate() : d.getDate());
+      today.getFullYear() +
+      (today.getMonth() + 1 < 10
+        ? "0" + (today.getMonth() + 1)
+        : today.getMonth() + 1) +
+      (today.getDate() < 10 ? "0" + today.getDate() : today.getDate());
     let data = await this.getData(_date);
     this.newsData = data.data.stories;
     this.newsDate = data.data.date;
