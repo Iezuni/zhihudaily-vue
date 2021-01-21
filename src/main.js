@@ -31,13 +31,17 @@ Vue.use(Loading.directive);
 
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$message = Message;
-
 Vue.config.productionTip = false
 
 Vue.prototype.$config = {
   apiPath: process.env.VUE_APP_apiUrl
 };
 
-new Vue({
+const app = new Vue({
   render: h => h(App),
 }).$mount('#app')
+
+export default {
+  app: app,
+  Message: Message
+}

@@ -3,7 +3,11 @@
     <el-container>
       <el-header>
         <div class="site-title-bar">
-          <span><el-link class="site-title" href="/">每日知乎</el-link></span>
+          <span
+            ><el-link class="site-title" href="/" :underline="false"
+              >每日知乎</el-link
+            ></span
+          >
           <el-date-picker
             v-model="datePicker"
             type="date"
