@@ -13,6 +13,7 @@
             type="date"
             placeholder="选择收录日期"
             value-format="yyyyMMdd"
+            :picker-options="pickerOptions"
           >
           </el-date-picker>
         </div>
@@ -29,7 +30,7 @@
         <el-table
           class="main-table"
           @row-click="openNews"
-          :data="newsData"
+          :data="stories"
           stripe
         >
           <el-table-column prop="hint" label="栏目"> </el-table-column>
@@ -77,15 +78,56 @@
 </template>
 
 <script>
+import { Base64 } from "js-base64";
 import axios from "axios";
 export default {
   name: "app",
   data() {
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return (
+            time.getTime() > Date.now() + 86400000 ||
+            1368928800000 > time.getTime()
+          );
+        },
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              picker.$emit("pick", new Date());
+            },
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit("pick", date);
+            },
+          },
+          {
+            text: "一周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", date);
+            },
+          },
+          {
+            text: "52周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7 * 52);
+              picker.$emit("pick", date);
+            },
+          },
+        ],
+      },
       datePicker: "",
       newsDate: "",
       isLoading: true,
-      newsData: [{ hint: "没有数据", title: "请在上面选择一个日期" }],
+      stories: [{ hint: "没有数据", title: "请在上面选择一个日期" }],
     };
   },
   methods: {
@@ -97,28 +139,40 @@ export default {
       newsLink.click();
     },
     async getData(_date) {
+      this.stories = [];
+      this.isLoading = true;
       let data = await axios({
         method: "post",
         url: this.$config.apiPath,
         data: "date=" + _date,
       });
-      return data;
+      for (const story of data.data.data.stories) {
+        this.stories.push({
+          hint: Base64.decode(story.hint),
+          title: Base64.decode(story.title),
+          url: story.url,
+        });
+      }
+      this.newsDate = data.data.data.date;
+      this.isLoading = false;
+      return data.data;
+    },
+    formatTime(date) {
+      const formatNumber = (a) => {
+        let n = a.toString();
+        return n[1] ? n : "0" + n;
+      };
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return [year, month, day].map(formatNumber).join("");
     },
   },
   mounted: async function() {
     let today = new Date();
     today.setDate(today.getDate() + 1);
-    let _date =
-      "" +
-      today.getFullYear() +
-      (today.getMonth() + 1 < 10
-        ? "0" + (today.getMonth() + 1)
-        : today.getMonth() + 1) +
-      (today.getDate() < 10 ? "0" + today.getDate() : today.getDate());
-    let data = await this.getData(_date);
-    this.newsData = data.data.stories;
-    this.newsDate = data.data.date;
-    this.isLoading = false;
+    let _date = this.formatTime(today);
+    await this.getData(_date);
   },
   watch: {
     datePicker: async function(_value) {
@@ -131,11 +185,7 @@ export default {
         });
         return false;
       }
-      this.isLoading = true;
-      let data = await this.getData(_value);
-      this.isLoading = false;
-      this.newsData = data.data.stories;
-      this.newsDate = data.data.date;
+      await this.getData(_value);
       this.$message({
         showClose: true,
         message: "加载完成",

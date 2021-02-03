@@ -7,7 +7,9 @@ module.exports = {
     manifestOptions: {
       background_color: '#eaedf7'
     },
-    skipWaiting: true,
+    workboxOptions: {
+      skipWaiting: true,
+    },
     clientsClaim: true,
   },
   configureWebpack: {
@@ -17,7 +19,8 @@ module.exports = {
     },
     externals: {
       vue: "Vue",
-      axios: "axios"
+      axios: "axios",
+      "js-base64": "Base64"
     }
   }
 }
