@@ -12,7 +12,7 @@
             v-model="datePicker"
             type="date"
             placeholder="选择收录日期"
-            value-format="yyyyMMdd"
+            @change="pickdate"
             :picker-options="pickerOptions"
           >
           </el-date-picker>
@@ -22,7 +22,7 @@
         日报日期:{{ newsDate }}
         <el-tooltip
           effect="dark"
-          content="这个时间是收录时间,上面的是发布日期"
+          content="这个时间是日报日期,上面的是发布日期"
           placement="bottom"
         >
           <i class="el-icon-info"></i>
@@ -87,7 +87,7 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           return (
-            time.getTime() > Date.now() + 86400000 ||
+            time.getTime() > Date.now() - 86400000 ||
             1368928800000 > time.getTime()
           );
         },
@@ -126,7 +126,7 @@ export default {
       },
       datePicker: "",
       newsDate: "",
-      isLoading: true,
+      isLoading: false,
       stories: [{ hint: "没有数据", title: "请在上面选择一个日期" }],
     };
   },
@@ -138,7 +138,20 @@ export default {
       newsLink.rel = "noopener noreferrer";
       newsLink.click();
     },
-    async getData(_date) {
+    pickdate(time) {
+      this.getData(time);
+    },
+    async getData(time) {
+      if (this.isLoading) {
+        this.$message({
+          showClose: true,
+          message: "请等待上一次请求完成",
+          type: "warning",
+          duration: 1500,
+        });
+        return false;
+      }
+      let _date = this.formatTime(time);
       this.stories = [];
       this.isLoading = true;
       let data = await axios({
@@ -155,7 +168,13 @@ export default {
       }
       this.newsDate = data.data.data.date;
       this.isLoading = false;
-      return data.data;
+      this.$message({
+        showClose: true,
+        message: "加载完成",
+        type: "success",
+        duration: 1500,
+      });
+      return 0;
     },
     formatTime(date) {
       const formatNumber = (a) => {
@@ -170,29 +189,8 @@ export default {
   },
   mounted: async function() {
     let today = new Date();
-    today.setDate(today.getDate() + 1);
-    let _date = this.formatTime(today);
-    await this.getData(_date);
-  },
-  watch: {
-    datePicker: async function(_value) {
-      if (this.isLoading) {
-        this.$message({
-          showClose: true,
-          message: "请等待上一次请求完成",
-          type: "warning",
-          duration: 1500,
-        });
-        return false;
-      }
-      await this.getData(_value);
-      this.$message({
-        showClose: true,
-        message: "加载完成",
-        type: "success",
-        duration: 1500,
-      });
-    },
+    today.setDate(today.getDate() - 1);
+    await this.getData(today);
   },
 };
 </script>
