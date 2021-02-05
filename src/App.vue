@@ -3,19 +3,18 @@
     <el-container>
       <el-header>
         <div class="site-title-bar">
-          <span
-            ><el-link class="site-title" href="/" :underline="false"
-              >每日知乎</el-link
-            ></span
-          >
+          <span>
+            <el-link class="site-title" href="/" :underline="false">
+              每日知乎
+            </el-link>
+          </span>
           <el-date-picker
             v-model="datePicker"
             type="date"
             placeholder="选择收录日期"
             @change="pickdate"
             :picker-options="pickerOptions"
-          >
-          </el-date-picker>
+          ></el-date-picker>
         </div>
       </el-header>
       <el-main v-loading="isLoading" element-loading-text="Loading">
@@ -24,16 +23,14 @@
           effect="dark"
           content="这个时间是日报日期,上面的是发布日期"
           placement="bottom"
-        >
-          <i class="el-icon-info"></i>
+          ><i class="el-icon-info"></i>
         </el-tooltip>
         <el-table
           class="main-table"
           @row-click="openNews"
           :data="stories"
           stripe
-        >
-          <el-table-column prop="hint" label="栏目"> </el-table-column>
+          ><el-table-column prop="hint" label="栏目"> </el-table-column>
           <el-table-column prop="title" label="标题" min-width="200px">
           </el-table-column>
         </el-table>
@@ -86,10 +83,7 @@ export default {
     return {
       pickerOptions: {
         disabledDate(time) {
-          return (
-            time.getTime() > Date.now() - 86400000 ||
-            1368928800000 > time.getTime()
-          );
+          return time.getTime() > Date.now() || 1368842400000 > time.getTime();
         },
         shortcuts: [
           {
@@ -133,15 +127,16 @@ export default {
   methods: {
     openNews(newsItem) {
       let newsLink = document.createElement("a");
-      newsLink.href = newsItem.url;
+      if (newsItem.url) newsLink.href = newsItem.url;
+      else return 0;
       newsLink.target = "_blank";
       newsLink.rel = "noopener noreferrer";
       newsLink.click();
     },
     pickdate(time) {
-      this.getData(time);
+      this.getNews(time);
     },
-    async getData(time) {
+    async getNews(time) {
       if (this.isLoading) {
         this.$message({
           showClose: true,
@@ -163,7 +158,7 @@ export default {
         this.stories.push({
           hint: Base64.decode(story.hint),
           title: Base64.decode(story.title),
-          url: story.url,
+          url: story.url || "",
         });
       }
       this.newsDate = data.data.data.date;
@@ -188,9 +183,7 @@ export default {
     },
   },
   mounted: async function() {
-    let today = new Date();
-    today.setDate(today.getDate() - 1);
-    await this.getData(today);
+    await this.getNews(new Date());
   },
 };
 </script>
