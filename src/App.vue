@@ -64,21 +64,21 @@
         >构建<br />
         <el-link
           type="primary"
-          href="//github.com/yinyunsan/zhihudaily-vue"
+          href="//github.com/iezuni/zhihudaily-vue"
           target="_blank"
           rel="noopener noreferrer"
           >github</el-link
-        >
-      </el-footer>
+        ></el-footer
+      >
     </el-container>
   </div>
 </template>
 
 <script>
-import { Base64 } from "js-base64";
+import { decode } from "./base64";
 import axios from "axios";
+const apiPath = process.env.VUE_APP_apiUrl;
 export default {
-  name: "app",
   data() {
     return {
       pickerOptions: {
@@ -151,13 +151,13 @@ export default {
       this.isLoading = true;
       let data = await axios({
         method: "post",
-        url: this.$config.apiPath,
+        url: apiPath,
         data: "date=" + _date,
       });
       for (const story of data.data.data.stories) {
         this.stories.push({
-          hint: Base64.decode(story.hint),
-          title: Base64.decode(story.title),
+          hint: decode(story.hint),
+          title: decode(story.title),
           url: story.url || "",
         });
       }
@@ -182,7 +182,7 @@ export default {
       return [year, month, day].map(formatNumber).join("");
     },
   },
-  mounted: async function() {
+  mounted: async function () {
     await this.getNews(new Date());
   },
 };

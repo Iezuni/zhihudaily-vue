@@ -1,40 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="icon" href="<%= BASE_URL %>icon.png" />
-    <meta name="Title" content="每日知乎" />
-    <meta name="Description" content="知乎日报整理" />
-    <meta name="Keywords" content="知乎;知乎日报;工具" />
-    <meta name="Language" content="zh-CN" />
-    <link href="<%= VUE_APP_Vue %>" rel="preload" as="script" />
-    <link href="<%= VUE_APP_Axios %>" rel="preload" as="script" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/js-base64@3.6.0/base64.min.js"
-      rel="preload"
-      as="script"
-    />
-    <title>每日知乎</title>
-  </head>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<link rel="icon" href="<%= BASE_URL %>icon.png" />
+		<meta name="Title" content="每日知乎" />
+		<meta name="Description" content="知乎日报整理" />
+		<meta name="Keywords" content="知乎;知乎日报;工具" />
+		<meta name="Language" content="zh-CN" />
+		<link rel="dns-prefetch" href="https://api.lostkotoba.top" />
+		<link href="<%= VUE_APP_Vue %>" rel="preload" as="script" />
+		<link href="<%= VUE_APP_Axios %>" rel="preload" as="script" />
+		<title>每日知乎</title>
+	</head>
 
-  <body>
-    <noscript>
-      <strong
-        >很抱歉，如果不启用JavaScript，此网站将无法正常运行。
-        请启用它以继续。</strong
-      >
-    </noscript>
-    <div id="app">
-      <h1 style="text-align: center;">正在加载<br />请稍后.......</h1>
-      <h4 style="text-align: center;color: #aaa;">
-        若无法正常加载,请使用新版浏览器
-      </h4>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/js-base64@3.6.0/base64.min.js"></script>
-    <script src="<%= VUE_APP_Vue %>"></script>
-    <script src="<%= VUE_APP_Axios %>"></script>
-    <!-- built files will be auto injected -->
-  </body>
+	<body>
+		<noscript>
+			<strong>很抱歉，如果不启用JavaScript，此网站将无法正常运行。 请启用它以继续。</strong>
+		</noscript>
+		<div id="app">
+			<h1 style="text-align: center;">正在加载<br />请稍后.......</h1>
+			<h4 style="text-align: center;color: #aaa;">
+				若无法正常加载,请使用新版浏览器
+			</h4>
+		</div>
+		<script src="<%= VUE_APP_Vue %>"></script>
+		<script src="<%= VUE_APP_Axios %>"></script>
+		<!-- built files will be auto injected -->
+	</body>
 </html>
